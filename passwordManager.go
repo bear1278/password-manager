@@ -27,3 +27,16 @@ func (pm *PasswordManager) SetMasterPassword(masterPassword string) error {
 	pm.isInitialized = true
 	return nil
 }
+
+// TODO: После реализации CheckPasswordStrength (Этап 10) добавьте в SavePassword проверку надёжности пароля перед сохранением.
+func (pm *PasswordManager) SavePassword(name, value, category string) error {
+	if !pm.isInitialized {
+		return errors.New("password manager is not initialized")
+	}
+	if _, ok := pm.passwords[name]; ok {
+		return errors.New("password name already exists")
+	}
+	password := NewPassword(name, value, category)
+	pm.passwords[name] = password
+	return nil
+}
