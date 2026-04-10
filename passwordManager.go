@@ -1,7 +1,7 @@
 package main
 
 type PasswordManager struct {
-	passwords     map[string]Password `json:"-"`
+	Passwords     map[string]Password `json:"passwords"`
 	masterKey     []byte              `json:"-"`
 	filePath      string              `json:"-"`
 	isInitialized bool                `json:"-"`
