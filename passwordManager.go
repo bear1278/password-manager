@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 )
 
 type PasswordManager struct {
@@ -223,4 +224,21 @@ func (pm *PasswordManager) FindDuplicatePasswords() map[string][]string {
 		}
 	}
 	return duplicates
+}
+
+func (pm *PasswordManager) UpdatePassword(name, newValue string) error {
+	if !pm.isInitialized {
+		return errors.New("password manager is not initialized")
+	}
+	password, ok := pm.passwords[name]
+	if !ok {
+		return errors.New("password does not exist")
+	}
+	if err := pm.CheckPasswordStrength(newValue); err != nil {
+		return err
+	}
+	password.Value = newValue
+	password.LastModified = time.Now()
+	pm.passwords[name] = password
+	return nil
 }
