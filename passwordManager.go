@@ -289,7 +289,10 @@ func (pm *PasswordManager) GetPasswordStats() map[string]interface{} {
 			newest = v
 		}
 	}
-	stats["oldest"] = oldest.CreatedAt.Format(time.DateTime)
-	stats["newest"] = newest.CreatedAt.Format(time.DateTime)
+	if len(pm.passwords) > 0 {
+		stats["oldest"] = oldest.CreatedAt.Format(time.DateTime)
+		stats["newest"] = newest.CreatedAt.Format(time.DateTime)
+	}
+	stats["oldest"], stats["newest"] = "", ""
 	return stats
 }
