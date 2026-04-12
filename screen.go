@@ -37,13 +37,13 @@ func waitForEnter() { // Ожидание нажатия Enter
 	clearScreen()
 }
 
-func ReadUserInput(prompt string) (string, error) {
+func ReadUserInput(prompt string) string {
 	fmt.Println(prompt)
 	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
-		return "", err
+		return ""
 	}
-	return strings.TrimSpace(input), nil
+	return strings.TrimSpace(input)
 }
 
 func readPassword() (string, error) {
