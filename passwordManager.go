@@ -242,3 +242,14 @@ func (pm *PasswordManager) UpdatePassword(name, newValue string) error {
 	pm.passwords[name] = password
 	return nil
 }
+
+func (pm *PasswordManager) DeletePassword(name string) error {
+	if !pm.isInitialized {
+		return errors.New("password manager is not initialized")
+	}
+	if _, ok := pm.passwords[name]; !ok {
+		return errors.New("password does not exist")
+	}
+	delete(pm.passwords, name)
+	return nil
+}
