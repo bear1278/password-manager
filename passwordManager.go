@@ -69,6 +69,40 @@ func (pm *PasswordManager) ListPasswords() []Password {
 	return result
 }
 
+func (pm *PasswordManager) CheckPasswordStrength(password string) error {
+	if len(password) < 8 {
+		return errors.New("password must be at least 8 characters")
+	}
+	hasBig, hasDigit, hasSmall, hasSpec := false, false, false, false
+	for _, v := range password {
+		if strings.ContainsRune("0123456789", v) {
+			hasDigit = true
+		}
+		if strings.ContainsRune("!@#$%^&*()_+=-/?.,<>';:]}[{~", v) {
+			hasSpec = true
+		}
+		if strings.ContainsRune("qwertyuiopasdfghjklzxcvbnm", v) {
+			hasSmall = true
+		}
+		if strings.ContainsRune("QWERTYUIOPASDFGHJKLZXCVBNM", v) {
+			hasBig = true
+		}
+	}
+	if !hasBig {
+		return errors.New("password must contain capital characters")
+	}
+	if !hasSmall {
+		return errors.New("password must contain lowercase characters")
+	}
+	if !hasSpec {
+		return errors.New("password must contain special characters")
+	}
+	if !hasDigit {
+		return errors.New("password must contain digits")
+	}
+	return nil
+}
+
 func (pm *PasswordManager) GeneratePassword(length int) (string, error) {
 
 	if length < 8 {
