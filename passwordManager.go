@@ -37,7 +37,6 @@ func (pm *PasswordManager) SetMasterPassword(masterPassword string) error {
 	return nil
 }
 
-// TODO: После реализации CheckPasswordStrength (Этап 10) добавьте в SavePassword проверку надёжности пароля перед сохранением.
 func (pm *PasswordManager) SavePassword(name, value, category string) error {
 	if !pm.isInitialized {
 		return errors.New("password manager is not initialized")
@@ -45,7 +44,10 @@ func (pm *PasswordManager) SavePassword(name, value, category string) error {
 	if _, ok := pm.passwords[name]; ok {
 		return errors.New("password name already exists")
 	}
-	password := NewPassword(name, value, category)
+	if err := pm.CheckPasswordStrength(value); err != nil {
+		return err
+	}
+	password := NewPassword(name, value, strings.ToLower(category))
 	pm.passwords[name] = password
 	return nil
 }
@@ -195,4 +197,14 @@ func (pm *PasswordManager) LoadFromFile() error {
 		return err
 	}
 	return nil
+}
+
+func (pm *PasswordManager) GetPasswordsByCategory(category string) []Password {
+	result := make([]Password, 0)
+	for _, v := range pm.passwords {
+		if strings.ToLower(category) == v.Category {
+			result = append(result, v)
+		}
+	}
+	return result
 }
