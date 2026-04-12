@@ -1,6 +1,10 @@
 package main
 
-import "errors"
+import (
+	"crypto/rand"
+	"errors"
+	"strings"
+)
 
 type PasswordManager struct {
 	passwords     map[string]Password `json:"passwords"`
@@ -58,4 +62,24 @@ func (pm *PasswordManager) ListPasswords() []Password {
 		result = append(result, v)
 	}
 	return result
+}
+
+func (pm *PasswordManager) GeneratePassword(length int) (string, error) {
+
+	if length < 8 {
+		return "", errors.New("password must be at least 8 characters")
+	}
+	symbols := `qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!@#$%^&*()_+=-/?.,<>';:]}[{~`
+	buffer := make([]byte, length)
+	_, err := rand.Read(buffer)
+	if err != nil {
+		return "", err
+	}
+	stringBuilder := strings.Builder{}
+	var key int
+	for _, v := range buffer {
+		key = int(v) % len(symbols)
+		stringBuilder.WriteString(string(symbols[key]))
+	}
+	return stringBuilder.String(), nil
 }
