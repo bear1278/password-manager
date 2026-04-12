@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"golang.org/x/term"
 	"os"
+	"strings"
 )
 
 const (
@@ -33,4 +35,22 @@ func waitForEnter() { // Ожидание нажатия Enter
 		return
 	}
 	clearScreen()
+}
+
+func ReadUserInput(prompt string) string {
+	fmt.Println(prompt)
+	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	if err != nil {
+		return err.Error()
+	}
+	return strings.TrimSpace(input)
+}
+
+func readPassword() (string, error) {
+	password, err := term.ReadPassword(int(os.Stdin.Fd()))
+	fmt.Println()
+	if err != nil {
+		return "", err
+	}
+	return string(password), nil
 }
