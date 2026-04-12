@@ -253,3 +253,17 @@ func (pm *PasswordManager) DeletePassword(name string) error {
 	delete(pm.passwords, name)
 	return nil
 }
+
+func (pm *PasswordManager) ListCategories() []string {
+	categories := make([]string, 0)
+	var multitude = make(map[string]bool)
+	for _, v := range pm.passwords {
+		if !multitude[v.Category] {
+			multitude[v.Category] = true
+		}
+	}
+	for k, _ := range multitude {
+		categories = append(categories, k)
+	}
+	return categories
+}
