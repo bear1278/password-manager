@@ -40,3 +40,14 @@ func (pm *PasswordManager) SavePassword(name, value, category string) error {
 	pm.passwords[name] = password
 	return nil
 }
+
+func (pm *PasswordManager) GetPassword(name string) (Password, error) {
+	if !pm.isInitialized {
+		return Password{}, errors.New("password manager is not initialized")
+	}
+	p, ok := pm.passwords[name]
+	if !ok {
+		return Password{}, errors.New("password does not exist")
+	}
+	return p, nil
+}
