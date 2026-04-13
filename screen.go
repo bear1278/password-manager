@@ -228,3 +228,15 @@ func HandlePasswordUpdate(pm *PasswordManager) error {
 	showSuccess("Password updated successfully")
 	return nil
 }
+
+func HandleExitAndSave(pm *PasswordManager) error {
+	clearScreen()
+	fmt.Println("Saving changes...")
+	err := pm.SaveToFile()
+	if err != nil {
+		showError(err.Error())
+	}
+	showSuccess("Password saved successfully")
+	showSuccess("Goodbye!")
+	return nil
+}
