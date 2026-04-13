@@ -235,6 +235,7 @@ func HandleExitAndSave(pm *PasswordManager) error {
 	err := pm.SaveToFile()
 	if err != nil {
 		showError(err.Error())
+		return err
 	}
 	showSuccess("Password saved successfully")
 	showSuccess("Goodbye!")
