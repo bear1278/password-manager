@@ -96,6 +96,7 @@ func ShowPasswordDetails(password Password) {
 
 func HandlePasswordGeneration(pm *PasswordManager) error {
 	clearScreen()
+	defer waitForEnter()
 	fmt.Println("=== Password Generation ===")
 	fmt.Println("Enter password length (min 8): ")
 	reader := bufio.NewReader(os.Stdin)
@@ -117,11 +118,11 @@ func HandlePasswordGeneration(pm *PasswordManager) error {
 	}
 	showSuccess("Password generated successfully")
 	fmt.Println("Generated password: ", password)
-	waitForEnter()
 	return nil
 }
 func HandlePasswordAdd(pm *PasswordManager) error {
 	clearScreen()
+	defer waitForEnter()
 	fmt.Println("=== Add New Password ===")
 	fmt.Println("Enter service name: ")
 	reader := bufio.NewReader(os.Stdin)
@@ -159,11 +160,11 @@ func HandlePasswordAdd(pm *PasswordManager) error {
 		return err
 	}
 	showSuccess("Password saved successfully")
-	waitForEnter()
 	return nil
 }
 func HandlePasswordSearch(pm *PasswordManager) error {
 	clearScreen()
+	defer waitForEnter()
 	fmt.Println("=== Search Password ===")
 	fmt.Println("Enter service name: ")
 	reader := bufio.NewReader(os.Stdin)
@@ -178,17 +179,18 @@ func HandlePasswordSearch(pm *PasswordManager) error {
 		showError("password not found")
 		return errors.New("password not found")
 	}
+	showSuccess("Password search successfully")
 	fmt.Println("Password Details:")
 	fmt.Println("Service", password.Name)
 	fmt.Println("Category", password.Category)
 	fmt.Println("Password", password.Value)
 	fmt.Println("Created", password.CreatedAt.Format(time.DateTime))
 	fmt.Println("Last Modified", password.LastModified.Format(time.DateTime))
-	waitForEnter()
 	return nil
 }
 func HandlePasswordUpdate(pm *PasswordManager) error {
 	clearScreen()
+	defer waitForEnter()
 	fmt.Println("=== Password Update ===")
 	fmt.Println("Enter service name: ")
 	reader := bufio.NewReader(os.Stdin)
@@ -224,6 +226,5 @@ func HandlePasswordUpdate(pm *PasswordManager) error {
 		return err
 	}
 	showSuccess("Password updated successfully")
-	waitForEnter()
 	return nil
 }
