@@ -46,61 +46,17 @@ func main() {
 		case 3:
 			err = HandlePasswordSearch(pm)
 		case 4:
-			clearScreen()
-			PrintPasswordList(pm.ListPasswords())
-			waitForEnter()
+			ShowPasswordList(pm)
 		case 5:
 			err = HandlePasswordUpdate(pm)
 		case 6:
-			clearScreen()
-			input = ReadUserInput("Enter service name: ")
-			err = pm.DeletePassword(input)
-			if err != nil {
-				showError(err.Error())
-			} else {
-				showSuccess("Password deleted successfully")
-			}
-			waitForEnter()
+			err = HandlePasswordDelete(pm)
 		case 7:
-			clearScreen()
-			categories := pm.ListCategories()
-			if len(categories) == 0 {
-				showSuccess("Empty list of categories")
-			} else {
-				for _, category := range categories {
-					fmt.Println(category)
-				}
-			}
-			waitForEnter()
+			ShowCategories(pm)
 		case 8:
-			clearScreen()
-			stats := pm.GetPasswordStats()
-			fmt.Println("total password", stats["total"].(int))
-			categories := pm.ListCategories()
-			if len(categories) != 0 {
-				fmt.Println("Count of passwords by category:")
-				for _, category := range categories {
-					fmt.Println(category, stats[category].(int))
-				}
-			}
-			fmt.Println("oldest password", stats["oldest"].(string))
-			fmt.Println("newest password", stats["newest"].(string))
-			waitForEnter()
+			ShowStats(pm)
 		case 9:
-			clearScreen()
-			dublicates := pm.FindDuplicatePasswords()
-			if len(dublicates) == 0 {
-				fmt.Println("No duplicate passwords found")
-			} else {
-				for k, v := range dublicates {
-					fmt.Print("password: ", k, "for ")
-					for _, vv := range v {
-						fmt.Print(vv, ", ")
-					}
-					fmt.Println()
-				}
-			}
-			waitForEnter()
+			err = HandleFindingDuplicates(pm)
 		case 0:
 			err = HandleExitAndSave(pm)
 			return

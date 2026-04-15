@@ -212,3 +212,70 @@ func HandleExitAndSave(pm *PasswordManager) error {
 	showSuccess("Goodbye!")
 	return nil
 }
+
+func HandleFindingDuplicates(pm *PasswordManager) error {
+	clearScreen()
+	duplicates := pm.FindDuplicatePasswords()
+	if len(duplicates) == 0 {
+		showInfo("No duplicate passwords found")
+	} else {
+		for k, v := range duplicates {
+			fmt.Print("password: ", k, "for ")
+			for _, vv := range v {
+				fmt.Print(vv, ", ")
+			}
+			fmt.Println()
+		}
+	}
+	waitForEnter()
+	return nil
+}
+
+func ShowStats(pm *PasswordManager) {
+	clearScreen()
+	stats := pm.GetPasswordStats()
+	fmt.Println("total password", stats["total"].(int))
+	categories := pm.ListCategories()
+	if len(categories) != 0 {
+		fmt.Println("Count of passwords by category:")
+		for _, category := range categories {
+			fmt.Println(category, stats[category].(int))
+		}
+	}
+	fmt.Println("oldest password", stats["oldest"].(string))
+	fmt.Println("newest password", stats["newest"].(string))
+	waitForEnter()
+}
+
+func ShowPasswordList(pm *PasswordManager) {
+	clearScreen()
+	PrintPasswordList(pm.ListPasswords())
+	waitForEnter()
+}
+
+func HandlePasswordDelete(pm *PasswordManager) error {
+	clearScreen()
+	input := ReadUserInput("Enter service name: ")
+	err := pm.DeletePassword(input)
+	if err != nil {
+		showError(err.Error())
+		return err
+	} else {
+		showSuccess("Password deleted successfully")
+	}
+	waitForEnter()
+	return nil
+}
+
+func ShowCategories(pm *PasswordManager) {
+	clearScreen()
+	categories := pm.ListCategories()
+	if len(categories) == 0 {
+		showSuccess("Empty list of categories")
+	} else {
+		for _, category := range categories {
+			fmt.Println(category)
+		}
+	}
+	waitForEnter()
+}
