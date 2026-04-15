@@ -63,16 +63,17 @@ func ShowMainMenu() {
 	fmt.Println(strings.Repeat("=", 42))
 	fmt.Println("Password Manager")
 	fmt.Println(strings.Repeat("=", 42))
-	fmt.Println(`1. Generate new password
-	2. Add new password
-	3. Get password
-	4. List all passwords
-	5. Update password
-	6. Delete password
-	7. List categories
-	8. Show password statistics
-	9. Find duplicate passwords
-	0. Exit`)
+	fmt.Println(
+		`1. Generate new password
+2. Add new password
+3. Get password
+4. List all passwords
+5. Update password
+6. Delete password
+7. List categories
+8. Show password statistics
+9. Find duplicate passwords
+0. Exit`)
 	fmt.Println(strings.Repeat("=", 42))
 }
 
@@ -121,40 +122,24 @@ func HandlePasswordGeneration(pm *PasswordManager) error {
 	return nil
 }
 func HandlePasswordAdd(pm *PasswordManager) error {
+	var err error
 	clearScreen()
 	defer waitForEnter()
 	fmt.Println("=== Add New Password ===")
-	fmt.Println("Enter service name: ")
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')
-	if err != nil {
-		showError(err.Error())
-		return err
-	}
-	name := strings.TrimSpace(input)
-	fmt.Println("Enter password (or press Enter to generate): ")
-	input, err = reader.ReadString('\n')
-	if err != nil {
-		showError(err.Error())
-		return err
-	}
-	password := strings.TrimSpace(input)
+	name := ReadUserInput("Enter service name: ")
+	password := ReadUserInput("Enter password (or press Enter to generate): ")
 	if password == "" {
-		password, err = pm.GeneratePassword(8)
-		if err != nil {
-			showError(err.Error())
-			return err
+		for err = pm.CheckPasswordStrength(password); err != nil; err = pm.CheckPasswordStrength(password) {
+			password, err = pm.GeneratePassword(12)
+			if err != nil {
+				showError(err.Error())
+				return err
+			}
 		}
 		showInfo("Password generated successfully: " + password)
 	}
-	fmt.Println("Enter category: ")
-	input, err = reader.ReadString('\n')
-	if err != nil {
-		showError(err.Error())
-		return err
-	}
-	category := strings.TrimSpace(input)
-	err = pm.SavePassword(name, category, password)
+	category := ReadUserInput("Enter category: ")
+	err = pm.SavePassword(name, password, category)
 	if err != nil {
 		showError(err.Error())
 		return err
@@ -180,43 +165,28 @@ func HandlePasswordSearch(pm *PasswordManager) error {
 		return errors.New("password not found")
 	}
 	showSuccess("Password search successfully")
-	fmt.Println("Password Details:")
-	fmt.Println("Service", password.Name)
-	fmt.Println("Category", password.Category)
-	fmt.Println("Password", password.Value)
-	fmt.Println("Created", password.CreatedAt.Format(time.DateTime))
-	fmt.Println("Last Modified", password.LastModified.Format(time.DateTime))
+	ShowPasswordDetails(password)
 	return nil
 }
 func HandlePasswordUpdate(pm *PasswordManager) error {
+	var err error
 	clearScreen()
 	defer waitForEnter()
 	fmt.Println("=== Password Update ===")
-	fmt.Println("Enter service name: ")
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')
-	if err != nil {
-		showError(err.Error())
-		return err
-	}
-	name := strings.TrimSpace(input)
+	name := ReadUserInput("Enter service name: ")
 	_, ok := pm.passwords[name]
 	if !ok {
 		showError("password not found")
 		return errors.New("password not found")
 	}
-	fmt.Println("Enter password (or press Enter to generate): ")
-	input, err = reader.ReadString('\n')
-	if err != nil {
-		showError(err.Error())
-		return err
-	}
-	passwordValue := strings.TrimSpace(input)
+	passwordValue := ReadUserInput("Enter password (or press Enter to generate): ")
 	if passwordValue == "" {
-		passwordValue, err = pm.GeneratePassword(8)
-		if err != nil {
-			showError(err.Error())
-			return err
+		for err = pm.CheckPasswordStrength(passwordValue); err != nil; err = pm.CheckPasswordStrength(passwordValue) {
+			passwordValue, err = pm.GeneratePassword(12)
+			if err != nil {
+				showError(err.Error())
+				return err
+			}
 		}
 		showInfo("Password generated successfully: " + passwordValue)
 	}
