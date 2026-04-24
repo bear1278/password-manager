@@ -1,5 +1,8 @@
 # 🔐 Password Manager
 
+[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://golang.org)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Консольный менеджер паролей с шифрованием AES-GCM, генерацией надежных паролей и управлением категориями.
 
 ## ✨ Функциональность
@@ -47,7 +50,7 @@ git clone https://github.com/yourusername/password-manager.git
 cd password-manager
 
 # Сборка проекта
-go build main.go screen.go password.go passwordManager.go
+go build .
 
 # Запуск
 ./bin/password-manager

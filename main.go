@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// main function
 func main() {
 	pm := NewPasswordManager("passwords.txt")
 	reader := bufio.NewReader(os.Stdin)
