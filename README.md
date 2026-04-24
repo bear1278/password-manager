@@ -53,7 +53,7 @@ cd password-manager
 go build .
 
 # Запуск
-./bin/password-manager
+./password-manager
 ```
 
 # 📖 Использование
