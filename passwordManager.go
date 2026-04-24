@@ -12,6 +12,7 @@ import (
 	"time"
 )
 
+// PasswordManager manages encrypted password storage
 type PasswordManager struct {
 	passwords     map[string]Password `json:"passwords"`
 	masterKey     []byte              `json:"-"`
@@ -19,6 +20,7 @@ type PasswordManager struct {
 	isInitialized bool                `json:"-"`
 }
 
+// NewPasswordManager creates a new PasswordManager instance
 func NewPasswordManager(filePath string) *PasswordManager {
 	return &PasswordManager{filePath: filePath, passwords: make(map[string]Password), isInitialized: false}
 }
@@ -27,6 +29,9 @@ func NewPasswordManager(filePath string) *PasswordManager {
 В production используют KDF (Key Derivation Function),
 например scrypt или argon2, для безопасного преобразования пароля в ключ.*/
 
+// SetMasterPassword sets and validates the master password
+// Note: Using password directly as AES key is simplified for educational purposes.
+// Production code should use KDF like scrypt or argon2.
 func (pm *PasswordManager) SetMasterPassword(masterPassword string) error {
 	if len(masterPassword) < 8 {
 		return errors.New("master password must be at least 8 characters")
@@ -38,6 +43,7 @@ func (pm *PasswordManager) SetMasterPassword(masterPassword string) error {
 	return nil
 }
 
+// SavePassword saves a new password after validation
 func (pm *PasswordManager) SavePassword(name, value, category string) error {
 	if !pm.isInitialized {
 		return errors.New("password manager is not initialized")
@@ -53,6 +59,7 @@ func (pm *PasswordManager) SavePassword(name, value, category string) error {
 	return nil
 }
 
+// GetPassword retrieves a password by name
 func (pm *PasswordManager) GetPassword(name string) (Password, error) {
 	if !pm.isInitialized {
 		return Password{}, errors.New("password manager is not initialized")
@@ -64,6 +71,7 @@ func (pm *PasswordManager) GetPassword(name string) (Password, error) {
 	return p, nil
 }
 
+// ListPasswords returns all passwords as a slice
 func (pm *PasswordManager) ListPasswords() []Password {
 	result := make([]Password, 0)
 	for _, v := range pm.passwords {
@@ -72,6 +80,7 @@ func (pm *PasswordManager) ListPasswords() []Password {
 	return result
 }
 
+// CheckPasswordStrength validates password complexity
 func (pm *PasswordManager) CheckPasswordStrength(password string) error {
 	if len(password) < 8 {
 		return errors.New("password must be at least 8 characters")
@@ -106,6 +115,7 @@ func (pm *PasswordManager) CheckPasswordStrength(password string) error {
 	return nil
 }
 
+// GeneratePassword generates a cryptographically secure random password
 func (pm *PasswordManager) GeneratePassword(length int) (string, error) {
 
 	if length < 8 {
@@ -126,6 +136,7 @@ func (pm *PasswordManager) GeneratePassword(length int) (string, error) {
 	return stringBuilder.String(), nil
 }
 
+// SaveToFile encrypts and saves passwords to file
 func (pm *PasswordManager) SaveToFile() error {
 	if !pm.isInitialized {
 		return errors.New("password manager is not initialized")
@@ -163,6 +174,7 @@ func (pm *PasswordManager) SaveToFile() error {
 	return nil
 }
 
+// LoadFromFile loads and decrypts passwords from file
 func (pm *PasswordManager) LoadFromFile() error {
 	if !pm.isInitialized {
 		return errors.New("password manager is not initialized")
@@ -200,6 +212,7 @@ func (pm *PasswordManager) LoadFromFile() error {
 	return nil
 }
 
+// GetPasswordsByCategory returns all passwords in a specific category
 func (pm *PasswordManager) GetPasswordsByCategory(category string) []Password {
 	result := make([]Password, 0)
 	for _, v := range pm.passwords {
@@ -210,6 +223,7 @@ func (pm *PasswordManager) GetPasswordsByCategory(category string) []Password {
 	return result
 }
 
+// FindDuplicatePasswords finds passwords with duplicate values
 func (pm *PasswordManager) FindDuplicatePasswords() map[string][]string {
 	duplicates := make(map[string][]string)
 	for _, v := range pm.passwords {
@@ -226,6 +240,7 @@ func (pm *PasswordManager) FindDuplicatePasswords() map[string][]string {
 	return duplicates
 }
 
+// UpdatePassword updates an existing password
 func (pm *PasswordManager) UpdatePassword(name, newValue string) error {
 	if !pm.isInitialized {
 		return errors.New("password manager is not initialized")
@@ -243,6 +258,7 @@ func (pm *PasswordManager) UpdatePassword(name, newValue string) error {
 	return nil
 }
 
+// DeletePassword removes a password from storage
 func (pm *PasswordManager) DeletePassword(name string) error {
 	if !pm.isInitialized {
 		return errors.New("password manager is not initialized")
@@ -254,6 +270,7 @@ func (pm *PasswordManager) DeletePassword(name string) error {
 	return nil
 }
 
+// ListCategories returns all unique categories
 func (pm *PasswordManager) ListCategories() []string {
 	categories := make([]string, 0)
 	var multitude = make(map[string]bool)
@@ -268,6 +285,7 @@ func (pm *PasswordManager) ListCategories() []string {
 	return categories
 }
 
+// GetPasswordStats returns statistics about stored passwords
 func (pm *PasswordManager) GetPasswordStats() map[string]interface{} {
 	stats := make(map[string]interface{})
 	stats["total"] = len(pm.passwords)

@@ -40,6 +40,7 @@ func waitForEnter() { // Ожидание нажатия Enter
 	clearScreen()
 }
 
+// ReadUserInput reads and trims user input
 func ReadUserInput(prompt string) string {
 	fmt.Println(prompt)
 	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
@@ -58,6 +59,7 @@ func readPassword() (string, error) {
 	return string(password), nil
 }
 
+// ShowMainMenu displays the main menu
 func ShowMainMenu() {
 	clearScreen()
 	fmt.Println(strings.Repeat("=", 42))
@@ -77,6 +79,7 @@ func ShowMainMenu() {
 	fmt.Println(strings.Repeat("=", 42))
 }
 
+// PrintPasswordList prints a formatted list of passwords
 func PrintPasswordList(passwords []Password) {
 	fmt.Println("=== Password list ===")
 	fmt.Printf("%-25s %-25s %-25s %-25s\n", "Name", "Category", "Created", "Last Modified")
@@ -86,6 +89,7 @@ func PrintPasswordList(passwords []Password) {
 	}
 }
 
+// ShowPasswordDetails displays detailed password information
 func ShowPasswordDetails(password Password) {
 	fmt.Println("=== Password details ===")
 	fmt.Println("Service", password.Name)
@@ -95,6 +99,7 @@ func ShowPasswordDetails(password Password) {
 	fmt.Println("Last Modified", password.LastModified.Format(time.DateTime))
 }
 
+// HandlePasswordGeneration handles password generation
 func HandlePasswordGeneration(pm *PasswordManager) error {
 	clearScreen()
 	defer waitForEnter()
@@ -121,6 +126,8 @@ func HandlePasswordGeneration(pm *PasswordManager) error {
 	fmt.Println("Generated password: ", password)
 	return nil
 }
+
+// HandlePasswordAdd handles adding a new password
 func HandlePasswordAdd(pm *PasswordManager) error {
 	var err error
 	clearScreen()
@@ -147,6 +154,8 @@ func HandlePasswordAdd(pm *PasswordManager) error {
 	showSuccess("Password saved successfully")
 	return nil
 }
+
+// HandlePasswordSearch handles password search
 func HandlePasswordSearch(pm *PasswordManager) error {
 	clearScreen()
 	defer waitForEnter()
@@ -168,6 +177,8 @@ func HandlePasswordSearch(pm *PasswordManager) error {
 	ShowPasswordDetails(password)
 	return nil
 }
+
+// HandlePasswordUpdate handles password update
 func HandlePasswordUpdate(pm *PasswordManager) error {
 	var err error
 	clearScreen()
@@ -199,6 +210,7 @@ func HandlePasswordUpdate(pm *PasswordManager) error {
 	return nil
 }
 
+// HandleExitAndSave handles program exit and data saving
 func HandleExitAndSave(pm *PasswordManager) error {
 	clearScreen()
 	fmt.Println("Saving changes...")
@@ -213,6 +225,7 @@ func HandleExitAndSave(pm *PasswordManager) error {
 	return nil
 }
 
+// HandleFindingDuplicates handles duplicate password detection
 func HandleFindingDuplicates(pm *PasswordManager) error {
 	clearScreen()
 	duplicates := pm.FindDuplicatePasswords()
@@ -231,6 +244,7 @@ func HandleFindingDuplicates(pm *PasswordManager) error {
 	return nil
 }
 
+// ShowStats displays password statistic
 func ShowStats(pm *PasswordManager) {
 	clearScreen()
 	stats := pm.GetPasswordStats()
@@ -247,12 +261,14 @@ func ShowStats(pm *PasswordManager) {
 	waitForEnter()
 }
 
+// ShowPasswordList displays all passwords
 func ShowPasswordList(pm *PasswordManager) {
 	clearScreen()
 	PrintPasswordList(pm.ListPasswords())
 	waitForEnter()
 }
 
+// HandlePasswordDelete handles password deletion
 func HandlePasswordDelete(pm *PasswordManager) error {
 	clearScreen()
 	input := ReadUserInput("Enter service name: ")
@@ -267,6 +283,7 @@ func HandlePasswordDelete(pm *PasswordManager) error {
 	return nil
 }
 
+// ShowCategories displays all categories
 func ShowCategories(pm *PasswordManager) {
 	clearScreen()
 	categories := pm.ListCategories()
