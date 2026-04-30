@@ -46,7 +46,7 @@ Enter choice:
 
 ```bash
 # Клонирование репозитория
-git clone https://github.com/yourusername/password-manager.git
+git clone https://github.com/bear1278/password-manager.git
 cd password-manager
 
 # Сборка проекта
